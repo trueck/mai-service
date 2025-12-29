@@ -10,6 +10,7 @@ import org.example.services.SpringAiBoardGameService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,10 +32,13 @@ public class SpringAiBoardGameServiceWireMockTests {
   Resource responseResource;
 
   @Autowired
-  ChatClient.Builder chatClientBuilder;
+  ChatClient chatClient;
 
   @MockitoBean
   GameRulesService gameRulesService;
+
+  @MockitoBean
+  VectorStore vectorStore;
 
   @BeforeEach
   public void setup() throws IOException {
@@ -49,7 +53,7 @@ public class SpringAiBoardGameServiceWireMockTests {
   @Test
   public void testAskQuestion() {
     var boardGameService =
-        new SpringAiBoardGameService(chatClientBuilder, gameRulesService);
+        new SpringAiBoardGameService(chatClient, gameRulesService, vectorStore);
     var answer =
         boardGameService.askQuestion(
             new Question("DouDiZhu", "What is the capital of France?"));
