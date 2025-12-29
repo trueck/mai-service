@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.example.models.Question;
 import org.example.services.GameRulesService;
 import org.example.services.SpringAiBoardGameService;
+import org.example.tools.GameTools;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.client.ChatClient;
@@ -40,6 +41,9 @@ public class SpringAiBoardGameServiceWireMockTests {
   @MockitoBean
   VectorStore vectorStore;
 
+  @MockitoBean
+  GameTools gameTools;
+
   @BeforeEach
   public void setup() throws IOException {
     var cannedResponse =
@@ -53,7 +57,7 @@ public class SpringAiBoardGameServiceWireMockTests {
   @Test
   public void testAskQuestion() {
     var boardGameService =
-        new SpringAiBoardGameService(chatClient, gameRulesService, vectorStore);
+        new SpringAiBoardGameService(chatClient, gameRulesService, vectorStore, gameTools);
     String conversationId = "Default";
     var answer =
         boardGameService.askQuestion(

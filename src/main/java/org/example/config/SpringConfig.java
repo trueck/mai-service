@@ -1,5 +1,6 @@
 package org.example.config;
 
+import org.example.tools.GameTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
@@ -12,6 +13,7 @@ import org.springframework.ai.rag.preretrieval.query.expansion.MultiQueryExpande
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
 import org.springframework.ai.rag.preretrieval.query.transformation.TranslationQueryTransformer;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +30,7 @@ public class SpringConfig{
 
     @Bean
     ChatClient chatClient(
-            ChatClient.Builder chatClientBuilder, VectorStore vectorStore, ChatMemory chatMemory) {
+            ChatClient.Builder chatClientBuilder, VectorStore vectorStore, ChatMemory chatMemory,  GameTools gameTools) {
 
 //        return chatClientBuilder
 //                .defaultAdvisors(
@@ -36,11 +38,11 @@ public class SpringConfig{
 //                .build();
 
 
-        var advisor = RetrievalAugmentationAdvisor.builder()
-                .documentRetriever(
-                        VectorStoreDocumentRetriever.builder()
-                                .vectorStore(vectorStore)
-                                .build())
+//        var advisor = RetrievalAugmentationAdvisor.builder()
+//                .documentRetriever(
+//                        VectorStoreDocumentRetriever.builder()
+//                                .vectorStore(vectorStore)
+//                                .build())
 
 //                .queryExpander(
 //                        MultiQueryExpander.builder()
@@ -54,13 +56,23 @@ public class SpringConfig{
 //                        RewriteQueryTransformer.builder()
 //                                .chatClientBuilder(chatClientBuilder)
 //                                .build())
-                .build();
+//                .build();
 //
+//        return chatClientBuilder
+//                .defaultAdvisors(
+//                        PromptChatMemoryAdvisor.builder(chatMemory).build(),
+//                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
+//                        advisor)
+//                .defaultTools(gameTools)
+//                .build();
+
         return chatClientBuilder
-                .defaultAdvisors(
-                        PromptChatMemoryAdvisor.builder(chatMemory).build(),
-                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                        advisor)
+//                .defaultAdvisors(
+//                        QuestionAnswerAdvisor.builder(vectorStore)
+//                                .searchRequest(SearchRequest.builder().build()).build(),
+//                        MessageChatMemoryAdvisor.builder(
+//                                MessageWindowChatMemory.builder().build()).build())
+                .defaultTools(gameTools)
                 .build();
     }
 

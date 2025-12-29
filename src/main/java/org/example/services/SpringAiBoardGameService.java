@@ -4,6 +4,7 @@ package org.example.services;
 import lombok.extern.slf4j.Slf4j;
 import org.example.models.Answer;
 import org.example.models.Question;
+import org.example.tools.GameTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -24,15 +25,18 @@ public class SpringAiBoardGameService implements BoardGameService {
     private final ChatClient chatClient;
     private final GameRulesService gameRulesService;
     private final VectorStore vectorStore;
+    private final GameTools gameTools;
     @Value("classpath:/promptTemplates/systemPromptTemplate.st")
     Resource promptTemplate;
 
 
     public SpringAiBoardGameService(ChatClient chatClient,GameRulesService gameRulesService,
-                                    VectorStore vectorStore) {
+                                    VectorStore vectorStore,
+                                    GameTools gameTools) {
         this.chatClient = chatClient;
         this.gameRulesService = gameRulesService;
         this.vectorStore = vectorStore;
+        this.gameTools = gameTools;
     }
 
     @Override
@@ -77,9 +81,10 @@ public class SpringAiBoardGameService implements BoardGameService {
                         .text(promptTemplate)
                         .param("gameTitle", question.gameTitle()))
                 .user(question.question())
-                .advisors(advisorSpec ->
-                        advisorSpec.param(FILTER_EXPRESSION, gameNameMatch)
-                                .param(CONVERSATION_ID, conversationId))
+//                .advisors(advisorSpec ->
+//                        advisorSpec.param(FILTER_EXPRESSION, gameNameMatch)
+//                                .param(CONVERSATION_ID, conversationId))
+              //  .tools(gameTools)
                 .call()
                 .content();
         return new Answer(question.gameTitle(), response);
