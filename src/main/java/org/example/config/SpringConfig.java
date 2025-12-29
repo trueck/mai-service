@@ -1,7 +1,12 @@
 package org.example.config;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.ChatMemoryRepository;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.preretrieval.query.expansion.MultiQueryExpander;
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
@@ -23,7 +28,7 @@ public class SpringConfig{
 
     @Bean
     ChatClient chatClient(
-            ChatClient.Builder chatClientBuilder, VectorStore vectorStore) {
+            ChatClient.Builder chatClientBuilder, VectorStore vectorStore, ChatMemory chatMemory) {
 
 //        return chatClientBuilder
 //                .defaultAdvisors(
@@ -52,7 +57,25 @@ public class SpringConfig{
                 .build();
 //
         return chatClientBuilder
-                .defaultAdvisors(advisor)
+                .defaultAdvisors(
+                        PromptChatMemoryAdvisor.builder(chatMemory).build(),
+                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        advisor)
+                .build();
+    }
+
+//    @Bean
+//    ChatMemory chatMemory(ChatMemoryRepository chatMemoryRepository) {
+//        return MessageWindowChatMemory.builder()
+//                .chatMemoryRepository(chatMemoryRepository)
+//                .maxMessages(50)
+//                .build();
+//    }
+
+    @Bean
+    ChatMemory chatMemory(ChatMemoryRepository chatMemoryRepository) {
+        return MessageWindowChatMemory.builder()
+                .chatMemoryRepository(chatMemoryRepository)
                 .build();
     }
 

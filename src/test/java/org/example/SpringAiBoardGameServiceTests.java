@@ -47,7 +47,8 @@ public class SpringAiBoardGameServiceTests {
   public void evaluateRelevancy() {
     String userText = "Why is the sky blue?";
     Question question = new Question("DouDiZhu", userText);
-    Answer answer = boardGameService.askQuestion(question);
+    String conversationId = "Default";
+    Answer answer = boardGameService.askQuestion(question, conversationId);
 
     EvaluationRequest evaluationRequest = new EvaluationRequest(
         userText, answer.answer());
@@ -72,7 +73,8 @@ public class SpringAiBoardGameServiceTests {
   public void evaluateFactualAccuracy() {
     var userText = "Why is the sky blue?";
     var question = new Question("DouDiZhu", userText);
-    var answer = boardGameService.askQuestion(question);
+    String conversationId = "Default";
+    var answer = boardGameService.askQuestion(question, conversationId);
 
     var evaluationRequest =
             new EvaluationRequest(userText, answer.answer());

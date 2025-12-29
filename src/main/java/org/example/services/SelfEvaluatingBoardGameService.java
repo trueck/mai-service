@@ -34,7 +34,7 @@ public class SelfEvaluatingBoardGameService implements BoardGameService {
 
   @Override
   @Retryable(retryFor = AnswerNotRelevantException.class)
-  public Answer askQuestion(Question question) {
+  public Answer askQuestion(Question question, String conversationId) {
     var answerText = chatClient.prompt()
         .user(question.question())
         .call()

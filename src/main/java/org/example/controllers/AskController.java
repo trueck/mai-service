@@ -7,6 +7,7 @@ import org.example.models.Answer;
 import org.example.models.Question;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,9 +21,11 @@ public class AskController {
     }
 
     @PostMapping(path="/ask", produces="application/json")
-    public Answer ask(@RequestBody @Valid Question question) {
+    public Answer ask(@RequestHeader(name="X_AI_CONVERSATION_ID",
+            defaultValue = "default") String conversationId,
+                      @RequestBody @Valid Question question) {
         log.info("receiving question: {}", question.question());
-        return boardGameService.askQuestion(question);
+        return boardGameService.askQuestion(question, conversationId);
     }
 
 }

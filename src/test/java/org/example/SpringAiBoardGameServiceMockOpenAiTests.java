@@ -54,7 +54,8 @@ public class SpringAiBoardGameServiceMockOpenAiTests {
     public void testStuff() throws Exception {
         var expectedAnswer = "Checkers is a game for two players.";
         mockOpenAiChatResponse(expectedAnswer);
-        var answer = service.askQuestion(new Question("DouDiZhu", "How many can play checkers?"));
+        String conversationId = "Default";
+        var answer = service.askQuestion(new Question("DouDiZhu", "How many can play checkers?"), conversationId);
         Assertions.assertThat(answer.answer()).isEqualTo(expectedAnswer);
     }
 
