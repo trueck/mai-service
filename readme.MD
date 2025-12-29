@@ -1,0 +1,1 @@
+docker compose --file compose.yaml up
