@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import static org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor.FILTER_EXPRESSION;
+//import static org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor.FILTER_EXPRESSION;
+import static org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever.FILTER_EXPRESSION;
+
+
 
 @Service
 @Slf4j
@@ -34,7 +37,7 @@ public class SpringAiBoardGameService implements BoardGameService {
 
     @Override
     public Answer askQuestion(Question question) {
-        var gameRules = gameRulesService.getRulesFor(question.gameTitle(), question.question());
+      //  var gameRules = gameRulesService.getRulesFor(question.gameTitle(), question.question());
 
 //        var answerText = chatClient.prompt()
 //                .system(systemSpec -> systemSpec
@@ -64,12 +67,12 @@ public class SpringAiBoardGameService implements BoardGameService {
 //
 //        return responseEntity.entity();
       // return answer;
-
         var gameNameMatch = String.format(
                 "gameTitle == '%s'",
                 normalizeGameTitle(question.gameTitle()));
 
-        return chatClient.prompt()
+
+        var response = chatClient.prompt()
                 .system(systemSpec -> systemSpec
                         .text(promptTemplate)
                         .param("gameTitle", question.gameTitle()))
@@ -77,7 +80,9 @@ public class SpringAiBoardGameService implements BoardGameService {
                 .advisors(advisorSpec ->
                         advisorSpec.param(FILTER_EXPRESSION, gameNameMatch))
                 .call()
-                .entity(Answer.class);
+                .content();
+        return new Answer(question.gameTitle(), response);
+
     }
 
     private String normalizeGameTitle(String gameTitle) {
