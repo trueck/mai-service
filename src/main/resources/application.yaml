@@ -42,3 +42,17 @@ logging:
 logbook:
   format:
     style: http
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+
+otlp:
+  tracing:
+    url: http://localhost:4317
+

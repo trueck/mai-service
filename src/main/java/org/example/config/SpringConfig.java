@@ -67,9 +67,9 @@ public class SpringConfig{
 //                .build();
 
         return chatClientBuilder
-//                .defaultAdvisors(
-//                        QuestionAnswerAdvisor.builder(vectorStore)
-//                                .searchRequest(SearchRequest.builder().build()).build(),
+                .defaultAdvisors(
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder().build()).build())
 //                        MessageChatMemoryAdvisor.builder(
 //                                MessageWindowChatMemory.builder().build()).build())
                 .defaultTools(gameTools)
