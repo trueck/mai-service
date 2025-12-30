@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: demo
+  ai:
+    ollama:
+      chat:
+        model: llama3.1:8b
+        options:
+          model: llama3.1:8b
+    vectorstore:
+      qdrant:
+        initialize-schema: true
+        collection-name: board-game-buddy
+    mcp:
+      client:
+        stdio:
+          connections:
+#            boardgamedb:
+#              command: java
+#              args:
+#                - '-jar'
+#                - '/Users/edwinlu/dev/ai/mai-mcp-server/target/mai-mcp-server-0.0.1-SNAPSHOT.jar'
+
+            filesystem:
+              command: 'npx'
+              args:
+                - '-y'
+                - '@modelcontextprotocol/server-filesystem'
+                - './'
+
+        toolcallback:
+          enabled: true
+
+logging:
+  level:
+    org:
+      zalando:
+        logbook: TRACE
+logbook:
+  format:
+    style: http
