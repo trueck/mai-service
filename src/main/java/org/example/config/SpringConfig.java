@@ -4,6 +4,7 @@ import org.example.tools.GameTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
@@ -19,6 +20,8 @@ import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
+
+import java.util.List;
 
 @Configuration
 public class SpringConfig{
@@ -65,11 +68,17 @@ public class SpringConfig{
 //                        advisor)
 //                .defaultTools(gameTools)
 //                .build();
-
+        var safeGuardAdvisor = SafeGuardAdvisor.builder()
+                .sensitiveWords(List.of("Uno", "uno", "UNO"))
+                .failureResponse("We don't talk about UNO. No no no... " +
+                        "We don't talk about UNO. But...you can ask me about other games.")
+                .build();
         return chatClientBuilder
                 .defaultAdvisors(
                         QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(SearchRequest.builder().build()).build())
+                                .searchRequest(SearchRequest.builder().build()).build(),
+                        safeGuardAdvisor
+                )
 //                        MessageChatMemoryAdvisor.builder(
 //                                MessageWindowChatMemory.builder().build()).build())
                 .defaultTools(gameTools)
