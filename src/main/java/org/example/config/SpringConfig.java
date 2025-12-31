@@ -1,5 +1,6 @@
 package org.example.config;
 
+import org.example.advisor.CanaryWordAdvisor;
 import org.example.tools.GameTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -73,11 +74,16 @@ public class SpringConfig{
                 .failureResponse("We don't talk about UNO. No no no... " +
                         "We don't talk about UNO. But...you can ask me about other games.")
                 .build();
+        var canaryWordAdvisor = CanaryWordAdvisor.builder()
+                .canaryWordFoundMessage(
+                        "Detected attempt to leak system prompt message.")
+                .build();
         return chatClientBuilder
                 .defaultAdvisors(
                         QuestionAnswerAdvisor.builder(vectorStore)
                                 .searchRequest(SearchRequest.builder().build()).build(),
-                        safeGuardAdvisor
+                        safeGuardAdvisor,
+                        canaryWordAdvisor
                 )
 //                        MessageChatMemoryAdvisor.builder(
 //                                MessageWindowChatMemory.builder().build()).build())
