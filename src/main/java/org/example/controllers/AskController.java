@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.services.BoardGameService;
 import org.example.models.Answer;
 import org.example.models.Question;
+import org.example.services.ModerationService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AskController {
 
     private final BoardGameService boardGameService;
+//    private final ModerationService moderationService;
 
-    public AskController(BoardGameService boardGameService) {
+
+    public AskController(BoardGameService boardGameService
+//                         ModerationService moderationService
+    ) {
         this.boardGameService = boardGameService;
+//        this.moderationService = moderationService;
     }
 
     @PostMapping(path="/ask", produces="application/json")
@@ -28,6 +34,7 @@ public class AskController {
             defaultValue = "default") String conversationId,
                       @RequestBody @Valid Question question) {
         log.info("receiving question: {}", question.question());
+//        moderationService.moderate(question.question());
         return boardGameService.askQuestion(question, userDetails.getUsername() + "_" + conversationId);
     }
 
