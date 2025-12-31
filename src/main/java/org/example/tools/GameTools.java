@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,6 +26,7 @@ public class GameTools {
     @Tool(name = "getGameComplexity",
             description = "Returns a game's complexity/difficulty " +
                     "given the game's title/name.")
+    @PreAuthorize("hasRole('PREMIUM_USER')")
     public GameComplexityResponse getGameComplexity(
             @ToolParam(description="The title of the game")
             String gameTitle) {
